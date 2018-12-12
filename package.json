@@ -1,0 +1,13 @@
+{
+    "name": "cordova-android-update",
+    "version": "0.0.4",
+    "author": "cool1024",
+    "description": "Android应用程序更新插件",
+    "dependencies": {},
+    "cordova": {
+        "id": "cordova-android-update",
+        "platforms": [
+            "android"
+        ]
+    }
+}

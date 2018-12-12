@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="cordova-android-update" version="0.0.4">
+    <name>ANDROID_UPDATE</name>
+    <author>cool1024</author>
+    <license>Apache 2.0 License</license>
+    <engines>
+        <engine name="cordova" version=">=7.1.0"/>
+        <engine name="cordova-android" version=">=6.3.0" />
+    </engines>
+    <js-module src="plugin.js" name="NativePlugin">
+        <clobbers target="NativePlugin" />
+    </js-module>
+    <!-- android -->
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="AndroidUpdatePlugin">
+                <param name="android-package" value="com.plugin.AndroidUpdatePlugin" />
+            </feature>
+        </config-file>
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <service android:enabled="true" 
+                    android:exported="true" 
+                    android:name="com.plugin.DownloadService" />
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <!-- 权限列表 -->
+            <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+            <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+            <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+            <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+            <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+            <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
+            <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+        </config-file>
+        <!-- Java -->
+        <source-file src="src/DownloadService.java" target-dir="src/com/plugin" />
+        <source-file src="src/AndroidUpdatePlugin.java" target-dir="src/com/plugin" />
+    </platform>
+</plugin>
