@@ -23,7 +23,7 @@ import org.json.JSONException;
 public class AndroidUpdatePlugin extends CordovaPlugin implements ServiceConnection,
         DownloadService.ProgressListener {
 
-    public static final String TAG = "FbxPluginLog";
+    public static final String TAG = "AndroidUpdatePluginLog";
 
     public static final Integer REQUEST_STORAGE_WRITE = 1;
 

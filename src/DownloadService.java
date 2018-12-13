@@ -38,8 +38,6 @@ public class DownloadService extends Service {
     public static final String TAG = "DownloadService";
     public static final String DOWNLOAD_URL_KEY = "DOWNLOAD_URL_KEY";
     public static final Integer DOWNLOAD_HANDLE = 0;
-    private static final String CHANNEL_ID = "DownloadService";
-    private static final Integer mNotificationId = 1;
 
     private String mDownloadFilePath;
     private String mDownloadUrl;
@@ -52,8 +50,6 @@ public class DownloadService extends Service {
     private ScheduledExecutorService mScheduledExecutorService;
     private Runnable mUpdateProgressRunnable;
     private ProgressListener mProgressListener;
-    private NotificationCompat.Builder mBuilder;
-    private NotificationManager mNotificationManager;
     private Boolean mDownloadIsOk = false;
 
     @Override
