@@ -1,8 +1,6 @@
 package com.plugin;
 
 import android.app.DownloadManager;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,8 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
@@ -19,11 +15,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-
-import io.ionic.starter.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -142,9 +134,9 @@ public class DownloadService extends Service {
         // 设置漫游下禁止下载
         request.setAllowedOverRoaming(false);
         // 设置下载描述
-        request.setDescription("应用更新");
+        request.setDescription(AndroidUpdatePlugin.downloadDesc);
         // 设置下载标题
-        request.setTitle("正在下应用的最新安装包");
+        request.setTitle(AndroidUpdatePlugin.downloadTitle);
         // 允许下载的文件被系统download应用管理
         request.setVisibleInDownloadsUi(true);
         // 设置文件保存地址
@@ -229,9 +221,9 @@ public class DownloadService extends Service {
     }
 
 
-    public class DownloadBinder extends Binder {
+    class DownloadBinder extends Binder {
 
-        public DownloadService getService() {
+        DownloadService getService() {
             return DownloadService.this;
         }
     }
@@ -295,7 +287,6 @@ public class DownloadService extends Service {
             isOk = false;
         }
 
-        @NonNull
         @Override
         public String toString() {
             return "(" + completeSize + "," + totalSize + "," + downloadStatus + "," + isOk + ")";

@@ -23,13 +23,14 @@ import org.json.JSONException;
 public class AndroidUpdatePlugin extends CordovaPlugin implements ServiceConnection,
         DownloadService.ProgressListener {
 
-    public static final String TAG = "AndroidUpdatePluginLog";
+    static String downloadTitle = "应用更新";
+    static String downloadDesc = "正在下应用的最新安装包";
+    private static final String TAG = "AndroidUpdatePluginLog";
+    private static final Integer REQUEST_STORAGE_WRITE = 1;
+    private static final Integer INSTALL_PACKAGES_REQUEST_CODE = 2;
+    private static final Integer REQUEST_RECORDER_CODE = 3;
 
-    public static final Integer REQUEST_STORAGE_WRITE = 1;
-
-    public static final Integer INSTALL_PACKAGES_REQUEST_CODE = 2;
-
-    public CallbackContext mCallbackContext;
+    private CallbackContext mCallbackContext;
 
     private Uri mApkUri;
 
@@ -38,12 +39,24 @@ public class AndroidUpdatePlugin extends CordovaPlugin implements ServiceConnect
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
         this.mCallbackContext = callbackContext;
-        Activity mainActivity = cordova.getActivity();
-        Log.d(TAG, "调用应用更新服务");
-        downloadUrl = args.getString(0);
-        cordova.requestPermissions(AndroidUpdatePlugin.this, REQUEST_STORAGE_WRITE,
-                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE});
-        Log.d(TAG, "请求本地存储授权");
+
+        // 下载并安装APK
+        if (action.equals("downloadApk")) {
+            Log.d(TAG, "调用应用更新服务");
+            downloadUrl = args.getString(0);
+            downloadTitle = args.optString(1, downloadTitle);
+            downloadDesc = args.optString(2, downloadDesc);
+            cordova.requestPermissions(AndroidUpdatePlugin.this, REQUEST_STORAGE_WRITE,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE});
+            Log.d(TAG, "请求本地存储授权");
+        }
+
+        if (action.equals("requestRecorder")) {
+            String[] pms = {Manifest.permission.RECORD_AUDIO, Manifest.permission.MODIFY_AUDIO_SETTINGS};
+            cordova.requestPermissions(AndroidUpdatePlugin.this, REQUEST_RECORDER_CODE, pms);
+            Log.d(TAG, "请求录音权限");
+        }
+
         return true;
     }
 
@@ -135,6 +148,19 @@ public class AndroidUpdatePlugin extends CordovaPlugin implements ServiceConnect
                 Uri packageURI = Uri.parse("package:" + mainActivity.getPackageName());
                 Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, packageURI);
                 cordova.startActivityForResult(AndroidUpdatePlugin.this, intent, INSTALL_PACKAGES_REQUEST_CODE);
+            }
+        }
+
+        // 请求录音权限
+        if (requestCode == REQUEST_RECORDER_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "成功授权，可以进行录音");
+                this.mCallbackContext.success(1);
+            } else {
+                Log.d(TAG, "您拒绝了应用对麦克风的使用");
+                Toast.makeText(mainActivity.getApplicationContext(), "您拒绝了应用对麦克风的使用",
+                        Toast.LENGTH_SHORT).show();
+                this.mCallbackContext.success(0);
             }
         }
     }
