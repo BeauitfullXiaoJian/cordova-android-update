@@ -1,6 +1,6 @@
 {
     "name": "cordova-android-update",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "author": "cool1024",
     "description": "Android应用程序更新插件",
     "dependencies": {},
